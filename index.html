@@ -305,13 +305,16 @@ const MOCK_ITEMS=[
 ];
 
 function selClass(cls){
-  curCls=cls; curStu=null; curStuData=null; curCategory=null; curExam=null;
-  if(typeof curMockKey!=='undefined') curMockKey=null;
-  document.querySelectorAll('.cb').forEach(b=>b.classList.toggle('on',b.textContent===cls+'반'));
+  curCls=cls; curStu=null; curStuData=null; curCategory=null; curExam=null; curMockKey=null;
 
+  // 반 버튼 활성화
+  document.querySelectorAll('#clsBtns .cb').forEach(b=>b.classList.toggle('on',b.textContent===cls+'반'));
+
+  // 학생 패널 표시
   const stuSec=document.getElementById('stuSection');
   stuSec.style.display='block';
 
+  // 학생 목록 구성
   function buildStuList(){
     if(ALL[cls]&&ALL[cls].length){
       return ALL[cls].map(s=>
@@ -332,6 +335,21 @@ function selClass(cls){
   const cnt=(ALL[cls]&&ALL[cls].length)||Object.values(stuInfo).filter(v=>v._cls===cls).length||'?';
   document.getElementById('stuLabel').textContent=cls+'반 · '+cnt+'명';
   document.getElementById('stuGrid').innerHTML='<div class="stu-list">'+buildStuList()+'</div>';
+
+  // 오른쪽 항목 선택 패널 초기화
+  document.getElementById('navLabel').textContent='항목 선택';
+  document.getElementById('navBtns').innerHTML=
+    ['내신','모의고사'].map(cat=>
+      `<button class="cb" onclick="selCategory('${cat}')">${cat}</button>`
+    ).join('');
+  document.getElementById('navGradeWrap').style.display='none';
+  document.getElementById('navGradeBtns').innerHTML='';
+  document.getElementById('navSubBtnsWrap').style.display='none';
+  document.getElementById('navSubBtns').innerHTML='';
+
+  document.getElementById('cardArea').innerHTML='<div class="detail-card"><div class="ph">학생 이름을 선택한 뒤 항목을 골라주세요</div></div>';
+  stuSec.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 
 function selCategory(cat){
   curCategory=cat; curGrade=null; curExam=null;
